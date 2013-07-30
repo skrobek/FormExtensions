@@ -1,7 +1,8 @@
 {
     "name": "avocode/form-extensions-bundle",
     "type": "symfony-bundle",
-    "license": "MIT and Apache-2.0",
+    "description": "Symfony2 form types and extensions with a nice twitter-bootstrap style GUI",
+    "license": "(MIT and Apache-2.0)",
     "authors": [
         {
             "name": "Piotr Gołębiewski",
