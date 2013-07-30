@@ -2,6 +2,7 @@ FormExtensions
 ==============
 
 [![knpbundles.com](http://knpbundles.com/avocode/FormExtensions/badge)](http://knpbundles.com/avocode/FormExtensions)
+[![Build Status](https://travis-ci.org/avocode/FormExtensions.png)](https://travis-ci.org/avocode/FormExtensions)
 [![Latest Stable Version](https://poser.pugx.org/avocode/form-extensions-bundle/v/stable.png)](https://packagist.org/packages/avocode/form-extensions-bundle)
 [![Total Downloads](https://poser.pugx.org/avocode/form-extensions-bundle/downloads.png)](https://packagist.org/packages/avocode/form-extensions-bundle)
 
