@@ -2,7 +2,7 @@
 
 namespace Avocode\FormExtensionsBundle\Tests\Form\Type;
 
-use Avocode\FormExtensionsBundle\Form\DatePickerType;
+use Avocode\FormExtensionsBundle\Form\Type\DatePickerType;
 use Symfony\Component\Form\Tests\Extension\Core\Type\TypeTestCase;
 
 /**

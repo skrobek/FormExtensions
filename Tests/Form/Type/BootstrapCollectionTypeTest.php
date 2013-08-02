@@ -2,7 +2,7 @@
 
 namespace Avocode\FormExtensionsBundle\Tests\Form\Type;
 
-use Avocode\FormExtensionsBundle\Form\BootstrapCollectionType;
+use Avocode\FormExtensionsBundle\Form\Type\BootstrapCollectionType;
 use Avocode\FormExtensionsBundle\Tests\Model\TestObject;
 use Symfony\Component\Form\Tests\Extension\Core\Type\TypeTestCase;
 
