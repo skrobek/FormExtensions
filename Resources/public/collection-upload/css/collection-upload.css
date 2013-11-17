@@ -1,3 +1,10 @@
+/* Tool bar actions */
+.fileupload-progressbar{
+	display:none;
+	width: 25%;
+	float:right;
+}
+
 /* File input */
 .fileinput {
     position: relative;
@@ -24,6 +31,8 @@
     height: 30px;
     line-height: 30px;
 }
+
+.fileinput input.upload-selection {display:none}
 
 /* Upload presentation table styles */
 tbody.files > tr > td {

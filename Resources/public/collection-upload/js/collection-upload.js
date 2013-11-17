@@ -6,15 +6,36 @@
  */
 // Extend fileupload plugin
 ;$.widget('blueimp.fileupload', $.blueimp.fileupload, {
+	_uploadOnSubmit: function() {
+		return this.options.uploadOnSubmit;
+	},
+	
+	_cleanInputsFile: function() {
+		if (this._uploadOnSubmit()) {
+			this.options.fileInput
+//				.siblings('input.upload-selection').remove().end()
+				.prop('value', '');
+		}
+	},
+	
     _initButtonBarEventHandlers: function() {
         var that = this;
         var fileUploadButtonBar = this.element.find('.fileupload-buttonbar'),
             filesList = this.options.filesContainer;
     
+        this._on(fileUploadButtonBar.find('.start'), {
+            click: function(e) {
+                e.preventDefault();
+                filesList.find('button.start').click();
+                that._cleanInputsFile();
+            }
+        });
+        
         this._on(fileUploadButtonBar.find('.cancel'), {
             click: function(e) {
                 e.preventDefault();
-                filesList.find('.cancel button').click();
+                filesList.find('button.cancel').click();
+                that._cleanInputsFile();
             }
         });
         
@@ -22,7 +43,7 @@
             click: function(e) {
                 e.preventDefault();
                 if(confirm(that.options.messages.confirmBatchDelete)) {
-                    filesList.find('.delete input:checked')
+                    filesList.find('input[name=delete]:checked')
                         .parent().siblings('button').click();
                     fileUploadButtonBar.find('.toggle')
                         .prop('checked', false);
@@ -32,13 +53,33 @@
         
         this._on(fileUploadButtonBar.find('.toggle'), {
             change: function(e) {
-                filesList.find('.delete input').prop(
+                filesList.find('input[name=delete]').prop(
                     'checked',
                     $(e.currentTarget).is(':checked')
                 );
             }
         });
     },
+    
+//    _duplicateInputFile: function(evt, data) {
+//    	var clonedInput = data.fileInput.clone(true);
+//    	data.fileInput.addClass('upload-selection');
+//    	clonedInput.prop('value', '').insertAfter(data.fileInput);
+//    },
+    
+    _cancelWaitingUploads: function(evt, data) {
+    	this.options.filesContainer.find('.cancel').click();
+    },
+    
+    _initEventHandlers: function () {
+    	this._super();
+    	if (this._uploadOnSubmit()) {
+    		this._on({
+//    			fileuploadchange: this._duplicateInputFile
+    			fileuploadchange: this._cancelWaitingUploads
+    		});
+    	}
+    }
 });
 // the semi-colon before function invocation is a safety net against concatenated
 // scripts and/or other plugins which may not be closed properly.
@@ -95,6 +136,7 @@
             this.$element = $(this.element);
             this.$widgetContainer = $('#' + this.element.id + '_widget_container');
             this.$filesContainer = $('#' + this.element.id + '_files_list');
+            this.$progressBarContainer = this.$widgetContainer.find('.fileupload-progressbar');
             
             // Init fileupload
             this.$widgetContainer.fileupload({
@@ -116,7 +158,31 @@
                 previewSourceMaxFileSize: this.options.previewSourceMaxFileSize,
                 previewMaxWidth:          this.options.previewMaxWidth,
                 previewMaxHeight:         this.options.previewMaxHeight,
+                autoUpload:               this.options.autoUpload,
+                url:                      this.options.url,
+                uploadOnSubmit:	          !this.options.autoUpload && !this.options.url,
+                progressall: function(e, data) {
+                    if (data.total != 0) {
+                        var progress = parseInt(data.loaded / data.total * 100, 10);
+                        that.$progressBarContainer.find('.bar').css('width', progress + '%');
+                    }
+                },
+                start: function(e) {
+                	that.$progressBarContainer.show();
+                },
+                stop: function(e) {
+                	that.$progressBarContainer.hide();
+                }
             });
+            
+            if (!this.options.autoUpload && this.options.url) {
+                // For asynchronous upload only send the file
+                // Asynchronous upload aim is only to improve submit time. Processing the file and
+                // attaching it to an entity must be on the form submit.
+                this.$widgetContainer.bind('fileuploadadd', function(e, data){
+                    data.formData = {};
+                });
+            }
             
             // Init sortable
             if (this.options.sortable) {
