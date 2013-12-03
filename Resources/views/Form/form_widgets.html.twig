@@ -45,19 +45,19 @@
             {{ form_errors(form) }}
         </caption>
     {% endif %}
-    <thead>
+    <tbody class="collection">
+        {% for item in form %}
+            {{ block('afe_collection_table_item') }}
+        {% endfor %}
+    </tbody>
+    <tfoot>
       <tr>
         <td id="{{ id ~ '_toolbar' }}" class="btn-toolbar form-actions form-actions-condensed" colspan="4">
             {%- include "AvocodeFormExtensionsBundle:Form/BootstrapCollection:collection_add.html.twig" -%}
             {%- include "AvocodeFormExtensionsBundle:Form/BootstrapCollection:collection_batch_delete.html.twig" -%}
         </td>
       </tr>
-    </thead>
-    <tbody class="collection">
-        {% for item in form %}
-            {{ block('afe_collection_table_item') }}
-        {% endfor %}
-    </tbody>
+    </tfoot>
 </table>
 {% endspaceless %}
 {% endblock afe_collection_table_widget %}
@@ -69,7 +69,7 @@
         <div class="accordion" id="{{ 'accordion_' ~ item.vars.id }}">
             <div class="accordion-group">
                 <div class="accordion-heading">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="{{ '#accordion_' ~ item.vars.id }}" href="{{ '#accordion_body_' ~ item.vars.id }}">
+                    <a class="accordion-toggle{% if item.vars.value or collapsed %} collapsed{% endif %}" data-toggle="collapse" data-parent="{{ '#accordion_' ~ item.vars.id }}" href="{{ '#accordion_body_' ~ item.vars.id }}">
                         <i class="icon-chevron-down"></i>
                         <i class="icon-chevron-right"></i>
                         {% if item.vars.value %}
