@@ -156,6 +156,10 @@ class CollectionUploadSubscriber implements EventSubscriberInterface
         if ($this->allow_add) {
             // create file entites for each file
             foreach ($this->uploads as $upload) {
+                if (!is_object($upload) && !is_null($this->storage)) {
+                    $upload = $this->storage->getFile($upload);
+                }
+
                 if ($upload === null) {
                     continue;
                 }
