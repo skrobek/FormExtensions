@@ -2,7 +2,11 @@
 {% spaceless %}
 <a class="btn btn-primary new">
     <i class="icon-plus icon-white"></i>
-    {{- ' ' ~ 'afe_bootstrap_collection.add'|trans({}, 'AvocodeFormExtensions') -}}
+    {% if text is defined %}
+        {{ text }}
+    {% else %}
+        {{- ' ' ~ 'afe_bootstrap_collection.add'|trans({}, 'AvocodeFormExtensions') -}}
+    {% endif %}
 </a>
 {% endspaceless %}
 {% endif %}
