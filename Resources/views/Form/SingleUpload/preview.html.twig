@@ -24,7 +24,9 @@
         <br/>
         {% if showRoute %}
             {% set route = path( showRoute, { 'pk': object.id, 'action': 'showFile' } )  %}
-            <a class="btn btn-default" href="{{ route }}">Pobierz plik</a>
+            <a class="btn btn-warning" target="_blank" href="{{ route }}">
+                <i class="icon icon-download"></i>&nbsp;Pobierz plik
+            </a>
         {% endif %}
     </div>
     {% else %}
