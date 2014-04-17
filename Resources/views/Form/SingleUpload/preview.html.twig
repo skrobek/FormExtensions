@@ -20,7 +20,12 @@
     <div class="row-fluid">
         {% set nName = form.parent.vars.full_name ~ '_'~name~'[name]' %}
         {% set nValue = attribute(object, nameable) %}
-        <input type="text" class="nameable" name="{{ nName }}" value="{{ nValue }}" />
+        <input readonly="readonly" type="text" class="nameable" name="{{ nName }}" value="{{ nValue }}" />
+        <br/>
+        {% if showRoute %}
+            {% set route = path( showRoute, { 'pk': object.id, 'action': 'showFile' } )  %}
+            <a class="btn btn-default" href="{{ route }}">Pobierz plik</a>
+        {% endif %}
     </div>
     {% else %}
         <div class="row-fluid">{{ file.filename }}</div>

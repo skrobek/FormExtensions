@@ -54,7 +54,8 @@ class SingleUploadType extends AbstractType
                 'fileType'        => $this->_checkFileType($data),
                 'novalidate'      => $options['novalidate'],
                 'multipart'       => $options['multipart'],
-                'required'        => $options['required']
+                'required'        => $options['required'],
+                'showRoute'        => $options['showRoute'],
             )
         );
     }
@@ -79,6 +80,7 @@ class SingleUploadType extends AbstractType
             'multipart'         => true,
             'novalidate'        => true,
             'required'          => false,
+            'showRoute'        => false,
         ));
 
         $resolver->setAllowedValues(array(
