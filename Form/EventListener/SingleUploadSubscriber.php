@@ -5,6 +5,7 @@ namespace Avocode\FormExtensionsBundle\Form\EventListener;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\ResolvedFormTypeInterface;
 
 /**
  * @author Piotr Gołębiewski <loostro@gmail.com>
@@ -15,6 +16,8 @@ class SingleUploadSubscriber implements EventSubscriberInterface
      * @var string Single upload field configs
      */
     protected $configs = array();
+    
+    protected $files = array();
 
     public static function getSubscribedEvents()
     {
@@ -22,7 +25,21 @@ class SingleUploadSubscriber implements EventSubscriberInterface
             FormEvents::PRE_SUBMIT => array('preSubmit', 0),
             FormEvents::SUBMIT => array('onSubmit', 0),
             FormEvents::POST_SUBMIT => array('postSubmit', 0),
+            FormEvents::PRE_SET_DATA => array('preSetData', 0),
         );
+    }
+    
+    public function preSetData(FormEvent $event)
+    {
+        $form = $event->getForm();
+        $obj = $event->getData();
+        foreach ($form->all() as $child) {
+            if ($child->getConfig()->getType()->getName() === 'afe_single_upload') {
+                $name = $child->getName();
+                $getterName = 'get'.ucfirst($name);
+                $this->files[$name] = $obj->$getterName();
+            }
+        }
     }
 
     public function preSubmit(FormEvent $event)
@@ -31,7 +48,7 @@ class SingleUploadSubscriber implements EventSubscriberInterface
         $post = $event->getData();
 
         foreach ($form->all() as $child) {
-            if ($child->getConfig()->getType()->getName() === 'afe_single_upload') {
+            if ($this->isFieldSingleUpload($child->getConfig()->getType())) {
                 $childPost = $post[$child->getName()];
                 $options = $child->getConfig()->getOptions();
 
@@ -87,6 +104,12 @@ class SingleUploadSubscriber implements EventSubscriberInterface
                     // remove file
                     $data->$setterPath(null);
                 }
+                if(!array_key_exists('delete', $config) || $config['delete'] == false){
+                    $setter = 'set'.ucfirst($field);
+                    $getter = 'get'.ucfirst($field);
+                    if($data->$getter() === null)
+                        $data->$setter($this->files[$field]);
+                }
             }
 
             $event->setData($data);
@@ -117,5 +140,13 @@ class SingleUploadSubscriber implements EventSubscriberInterface
                 $event->setData($data);
             }
         }
+    }
+    
+    private function isFieldSingleUpload(ResolvedFormTypeInterface $formTypeInterface = null)
+    {
+        if($formTypeInterface == null) return false;
+        if($formTypeInterface->getName() == 'afe_single_upload') return true;
+
+        return $this->isFieldSingleUpload($formTypeInterface->getParent());
     }
 }
